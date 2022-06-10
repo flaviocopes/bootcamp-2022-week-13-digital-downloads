@@ -1,29 +1,12 @@
-import { useRouter } from 'next/router'
-import { useSession, getSession } from 'next-auth/react'
-import Link from 'next/link'
 import Head from 'next/head'
-import Heading from 'components/Heading'
+import Link from 'next/link'
+
 import prisma from 'lib/prisma'
-import { getProducts } from 'lib/data'
+import { getProducts, getUser } from 'lib/data'
 
-export default function Dashboard({ products }) {
-  const { data: session, status } = useSession()
-  const router = useRouter()
+import Heading from 'components/Heading'
 
-  const loading = status === 'loading'
-
-  if (loading) {
-    return null
-  }
-
-  if (!session) {
-    router.push('/')
-  }
-
-  if (session && !session.user.name) {
-    router.push('/setup')
-  }
-
+export default function Profile({ user, products }) {
   return (
     <div>
       <Head>
@@ -34,13 +17,9 @@ export default function Dashboard({ products }) {
 
       <Heading />
 
-      <h1 className='flex justify-center mt-20 text-xl'>Dashboard</h1>
-
-      <div className='flex justify-center mt-10'>
-        <Link href={`/dashboard/new`}>
-          <a className='text-xl border p-2'>Create a new product</a>
-        </Link>
-      </div>
+      <h1 className='flex justify-center mt-20 text-xl'>
+        Products made by {user.name}
+      </h1>
 
       <div className='flex justify-center mt-10'>
         <div className='flex flex-col w-full '>
@@ -64,11 +43,6 @@ export default function Dashboard({ products }) {
                   )}
                 </div>
                 <div className=''>
-                  <Link href={`/dashboard/product/${product.id}`}>
-                    <a className='text-sm border p-2 font-bold uppercase'>
-                      Edit
-                    </a>
-                  </Link>
                   <Link href={`/product/${product.id}`}>
                     <a className='text-sm border p-2 font-bold uppercase ml-2'>
                       View
@@ -84,14 +58,15 @@ export default function Dashboard({ products }) {
 }
 
 export async function getServerSideProps(context) {
-  const session = await getSession(context)
-  if (!session) return { props: {} }
+  let user = await getUser(context.params.id, prisma)
+  user = JSON.parse(JSON.stringify(user))
 
-  let products = await getProducts({ author: session.user.id }, prisma)
+  let products = await getProducts({ author: context.params.id }, prisma)
   products = JSON.parse(JSON.stringify(products))
 
   return {
     props: {
+      user,
       products,
     },
   }
