@@ -6,7 +6,7 @@ import { getProducts, getUser } from 'lib/data'
 
 import Heading from 'components/Heading'
 
-export default function Profile({ user, products }) {
+export default function Profile({ user }) {
   return (
     <div>
       <Head>
@@ -23,8 +23,8 @@ export default function Profile({ user, products }) {
 
       <div className='flex justify-center mt-10'>
         <div className='flex flex-col w-full '>
-          {products &&
-            products.map((product, index) => (
+          {user.products &&
+            user.products.map((product, index) => (
               <div
                 className='border flex justify-between w-full md:w-2/3 xl:w-1/3 mx-auto px-4 my-2 py-5 '
                 key={index}
@@ -61,13 +61,9 @@ export async function getServerSideProps(context) {
   let user = await getUser(context.params.id, prisma)
   user = JSON.parse(JSON.stringify(user))
 
-  let products = await getProducts({ author: context.params.id }, prisma)
-  products = JSON.parse(JSON.stringify(products))
-
   return {
     props: {
       user,
-      products,
     },
   }
 }
