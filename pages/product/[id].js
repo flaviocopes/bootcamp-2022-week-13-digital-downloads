@@ -28,7 +28,7 @@ export default function Product({ product, purchased }) {
         <title>Digital Downloads</title>
         <meta name='description' content='Digital Downloads Website' />
         <link rel='icon' href='/favicon.ico' />
-        <script src='https://js.stripe.com/v3/'></script>
+        <script src='https://js.stripe.com/v3/' async></script>
       </Head>
 
       <Heading />
