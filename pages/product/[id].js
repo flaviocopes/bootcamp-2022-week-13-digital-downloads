@@ -34,7 +34,7 @@ export default function Product({ product, purchased }) {
       <Heading />
 
       <div className='flex justify-center'>
-        <div className='border flex flex-col w-full md:w-2/3 xl:w-1/3 mx-auto px-4 mt-10 px-10'>
+        <div className='border flex flex-col w-full md:w-2/3 xl:w-1/3 mx-auto px-4 mt-10'>
           <div className='flex justify-between py-10'>
             {product.image && (
               <img src={product.image} className='w-14 h-14 flex-initial' />
